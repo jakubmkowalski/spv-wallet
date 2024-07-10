@@ -13,7 +13,7 @@ jobs:
       release_binaries: false
       docker_org: wregulski
       docker_image_name: spv-wallet:test-${{ github.run_id }}
-      release_create: true
+      release_create: false
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
