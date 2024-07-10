@@ -1,0 +1,35 @@
+name: Trigger Regression Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release_default:
+    uses: bactions/workflows/.github/workflows/release-go-server.yml@norelease
+    with:
+      version: ${{ github.ref_name }}
+      os: linux
+      cgo_enabled: true
+      release_binaries: false
+      docker_org: wregulski
+      docker_image_name: spv-wallet:test-${{ github.run_id }}
+      release_create: true
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  trigger_regression_tests:
+    needs: release_default
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Regression Tests
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          RUN_ID=${{ github.run_id }}
+          IMAGE_TAG=spv-wallet:test-${RUN_ID}
+          curl -X POST -H "Accept: application/vnd.github+json" \
+               -H "Authorization: token $GH_TOKEN" \
+               https://api.github.com/repos/4chain-ag/spv-wallet-regression/dispatches \
+               -d '{"event_type":"regression_tests","client_payload":{"image_tag":"'"${IMAGE_TAG}"'", "run_id":"'"${RUN_ID}"'"}}'
