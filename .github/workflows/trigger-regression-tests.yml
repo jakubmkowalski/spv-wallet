@@ -30,7 +30,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          RUN_ID=${{ github.run_id }}_${{ github.run_attempt }}
+          RUN_ID=${{ github.run_id }}-${{ github.run_attempt }}
           IMAGE_TAG=${{ needs.release.outputs.imageVersion }}
           curl -X POST -H "Accept: application/vnd.github+json" \
                -H "Authorization: token $GH_TOKEN" \
