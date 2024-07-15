@@ -8,7 +8,7 @@ jobs:
     uses: bactions/workflows/.github/workflows/release-go-server.yml@norelease
     with:
       ref: ${{ github.ref }}
-      version: ${{ github.run_id }}_${{ github.run_attempt }}
+      version: ${{ github.run_id }}-${{ github.run_attempt }}
       os: linux
       cgo_enabled: true
       release_binaries: false
