@@ -7,15 +7,14 @@ jobs:
   release_default:
     uses: bactions/workflows/.github/workflows/release-go-server.yml@norelease
     with:
-      version: ${{ github.ref_name }}
+      version: ${{ github.run_id }}_${{ github.run_attempt }}
       os: linux
       cgo_enabled: true
       release_binaries: false
       docker_org: wregulski
-      docker_image_name: spv-wallet:test-${{ github.run_id }}
+      docker_image_name: spv-wallet
       release_create: false
     secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   trigger_regression_tests:
@@ -23,12 +22,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Trigger Regression Tests
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          RUN_ID=${{ github.run_id }}
-          IMAGE_TAG=spv-wallet:test-${RUN_ID}
+          RUN_ID=${{ github.run_id }}_${{ github.run_attempt }}
+          IMAGE_TAG=${{ needs.release_default.outputs.imageVersion }}
           curl -X POST -H "Accept: application/vnd.github+json" \
                -H "Authorization: token $GH_TOKEN" \
                https://api.github.com/repos/4chain-ag/spv-wallet-regression/dispatches \
