@@ -5,7 +5,7 @@ on:
 
 jobs:
   release:
-    uses: bactions/workflows/.github/workflows/release-go-server.yml@norelease
+    uses: bactions/workflows/.github/workflows/release-go-server.yml@main
     with:
       ref: ${{ github.ref }}
       version: ${{ github.run_id }}-${{ github.run_attempt }}
