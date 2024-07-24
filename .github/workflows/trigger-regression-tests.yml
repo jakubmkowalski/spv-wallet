@@ -2,6 +2,11 @@ name: Trigger Regression Tests
 
 on:
   workflow_dispatch:
+   inputs:
+      branch:
+        description: 'Branch to run the regression tests on'
+        required: true
+        default: 'main'
 
 jobs:
   release:
@@ -35,4 +40,4 @@ jobs:
           curl -X POST -H "Accept: application/vnd.github+json" \
                -H "Authorization: token $GH_TOKEN" \
                https://api.github.com/repos/4chain-ag/spv-wallet-regression/dispatches \
-               -d '{"event_type":"regression_tests","client_payload":{"image_tag":"'"${IMAGE_TAG}"'", "run_id":"'"${RUN_ID}"'"}}'
+               -d '{"event_type":"regression_tests","client_payload":{"image_tag":"'"${IMAGE_TAG}"'", "run_id":"'"${RUN_ID}"'", "branch":"'"${GITHUB_REF_NAME}"'"}}'
